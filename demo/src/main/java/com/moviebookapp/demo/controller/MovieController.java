@@ -11,18 +11,18 @@ import java.util.List;
 @RequestMapping("/api/mba/movie")
 public class MovieController {
     @Autowired
-    private MovieService service;
+    private MovieService movieService;
     @PostMapping("/add")
     public Movie addMovie(@RequestBody Movie movie){
-       return service.addMovie(movie);
+       return movieService.addMovie(movie);
     }
     @GetMapping("/all")
     public List<Movie> getAllMovies(){
-        return service.getAllMovies();
+        return movieService.getAllMovies();
     }
     @GetMapping("/language")
     public List<Movie> getMovieByTicketLanguageOrderByTicket(@RequestParam String language){
-        return service.getMovieByTicketLanguageOrderByTicket(language);
+        return movieService.getMovieByTicketLanguageOrderByTicket(language);
     }
 
 }

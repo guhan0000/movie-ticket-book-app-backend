@@ -10,18 +10,18 @@ import java.util.List;
 @Service
 public class MovieService {
     @Autowired
-    private MovieRepository repository;
+    private MovieRepository movieRepo;
 
 //    add movie to db
     public Movie addMovie(Movie movie){
-        return repository.save(movie);
+        return movieRepo.save(movie);
     }
 //    get all movies
     public List<Movie> getAllMovies(){
-        return repository.findAllByOrderByMovieNameAsc();
+        return movieRepo.findAllByOrderByMovieNameAsc();
     }
 //    ticketprice filter using language
     public List<Movie>getMovieByTicketLanguageOrderByTicket(String language){
-        return repository.findAllByLanguageOrderByTicketPriceDesc(language);
+        return movieRepo.findAllByLanguageOrderByTicketPriceDesc(language);
     }
 }
