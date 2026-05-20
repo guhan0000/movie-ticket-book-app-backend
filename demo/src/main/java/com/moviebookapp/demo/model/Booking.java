@@ -12,7 +12,7 @@ public class Booking {
     private  Long bookingId;
     private String customerName;
     @ManyToOne
-    @JoinColumn(name = "movie_id", nullable = false,unique = true)
+    @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
     private Integer noOfTickets;
     private Double totalAmount;
