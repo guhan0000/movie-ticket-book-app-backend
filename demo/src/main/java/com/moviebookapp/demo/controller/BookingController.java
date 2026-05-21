@@ -1,5 +1,6 @@
 package com.moviebookapp.demo.controller;
 
+import com.moviebookapp.demo.model.User;
 import com.moviebookapp.demo.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +15,12 @@ public class BookingController {
     BookingService bookingService;
 
     @PostMapping("/bookMovie/{movieId}")
-    public Map<Object,Object> bookTicket(@PathVariable Long movieId, @RequestParam String custName,@RequestParam Integer noOfTickets){
-        return bookingService.bookTicket(custName,movieId,noOfTickets);
+    public Map<Object,Object> bookTicket(@PathVariable Long movieId,@RequestParam Integer noOfTickets,@RequestParam Long userId){
+        return bookingService.bookTicket(movieId,noOfTickets,userId);
+    }
+    @DeleteMapping("/cancelMovie/{bookingCode}")
+    public String cancelTicket(@PathVariable String bookingCode){
+        return bookingService.cancelTicket(bookingCode);
     }
 
 
