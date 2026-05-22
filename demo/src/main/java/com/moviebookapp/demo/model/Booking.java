@@ -20,5 +20,6 @@ public class Booking {
     private Movie movie;
     private Integer noOfTickets;
     private Double totalAmount;
+    private String status;
 
 }

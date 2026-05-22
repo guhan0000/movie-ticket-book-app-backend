@@ -19,7 +19,7 @@ public class BookingController {
         return bookingService.bookTicket(movieId,noOfTickets,userId);
     }
     @DeleteMapping("/cancelMovie/{bookingCode}")
-    public String cancelTicket(@PathVariable String bookingCode){
+    public Map cancelTicket(@PathVariable String bookingCode){
         return bookingService.cancelTicket(bookingCode);
     }
 

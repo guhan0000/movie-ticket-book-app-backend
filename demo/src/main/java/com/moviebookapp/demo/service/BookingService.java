@@ -47,6 +47,7 @@ public class BookingService {
 
                 booking.setTotalAmount(totalAmount);
                 booking.setBookingCode(generateBookingCode());
+                booking.setStatus("BOOKED");
 
                 Map<Object,Object>map=new LinkedHashMap<>();
                 map.put("customerName",user.getCustName());
@@ -57,15 +58,16 @@ public class BookingService {
                 movieRepository.save(movie);
                 return  map;
     }
-    public String cancelTicket(String bookingCode){
+    public Map cancelTicket(String bookingCode){
         Optional<Booking> bookingOptional=bookingRepository.findByBookingCode(bookingCode);
         if(bookingOptional.isPresent()){
             Booking booking=bookingOptional.get();
             Movie movie=movieRepository.findById(booking.getMovie().getMovieId()).orElseThrow(()->new RuntimeException("movie not found"));
             movie.setAvailableSeats(movie.getAvailableSeats()+booking.getNoOfTickets());
-            bookingRepository.delete(booking);
+            booking.setStatus("CANCELLED");
+            bookingRepository.save(booking);
             movieRepository.save(movie);
-            return "Tickets Cancelled";
+            return Map.of("message","Ticket Canceled");
         }
         else{
             throw new RuntimeException("booking not available");
