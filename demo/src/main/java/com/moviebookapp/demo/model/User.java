@@ -2,7 +2,9 @@ package com.moviebookapp.demo.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Data
@@ -16,6 +18,8 @@ public class User {
     @Email
     private String email;
     private String password;
+    @Length(max = 10)
+    private String phone;
     private String role;
 
 }

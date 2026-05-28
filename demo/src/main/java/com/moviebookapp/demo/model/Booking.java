@@ -3,6 +3,8 @@ package com.moviebookapp.demo.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @Table(name = "booking")
@@ -16,10 +18,10 @@ public class Booking {
     @JoinColumn(name="user_id")
     private User user;
     @ManyToOne
-    @JoinColumn(name = "movie_id", nullable = false)
-    private Movie movie;
-    private Integer noOfTickets;
+    @JoinColumn(name = "show_id", nullable = false)
+    private Show show;
     private Double totalAmount;
     private String status;
+    private LocalDateTime bookedAt;
 
 }
