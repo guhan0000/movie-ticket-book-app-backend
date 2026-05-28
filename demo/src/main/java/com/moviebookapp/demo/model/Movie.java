@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
 
+import java.awt.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Data
@@ -18,7 +20,7 @@ public class Movie {
     private String language;
     private Integer duration;
     private String posterUrl;
-    private String genre;
+    private List<String> genre;
     private String description;
     private LocalDate releaseDate;
     private Double rating;

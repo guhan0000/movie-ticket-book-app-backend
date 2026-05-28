@@ -10,5 +10,5 @@ import java.util.List;
 public interface MovieRepository extends JpaRepository<Movie,Long> {
     List<Movie> findAllByOrderByMovieNameAsc();
 //    select * from movie where language='tamil' order by ticketPrice desc;
-    List<Movie> findAllByLanguageOrderByTicketPriceDesc(String language);
+
 }

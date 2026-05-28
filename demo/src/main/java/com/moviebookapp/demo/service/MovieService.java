@@ -21,7 +21,4 @@ public class MovieService {
         return movieRepo.findAllByOrderByMovieNameAsc();
     }
 //    ticketprice filter using language
-    public List<Movie>getMovieByTicketLanguageOrderByTicket(String language){
-        return movieRepo.findAllByLanguageOrderByTicketPriceDesc(language);
-    }
 }

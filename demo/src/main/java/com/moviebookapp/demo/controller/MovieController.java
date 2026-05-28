@@ -21,9 +21,6 @@ public class MovieController {
     public List<Movie> getAllMovies(){
         return movieService.getAllMovies();
     }
-    @GetMapping("/language")
-    public List<Movie> getMovieByTicketLanguageOrderByTicket(@RequestParam String language){
-        return movieService.getMovieByTicketLanguageOrderByTicket(language);
-    }
+
 
 }
