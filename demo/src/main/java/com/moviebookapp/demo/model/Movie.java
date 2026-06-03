@@ -16,10 +16,12 @@ public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Long movieId;
+    @Column(name = "movie_name",nullable = false,unique = true)
     private String movieName;
     private String language;
     private Integer duration;
     private String posterUrl;
+    @ElementCollection
     private List<String> genre;
     private String description;
     private LocalDate releaseDate;

@@ -20,5 +20,14 @@ public class MovieService {
     public List<Movie> getAllMovies(){
         return movieRepo.findAllByOrderByMovieNameAsc();
     }
-//    ticketprice filter using language
+//    bulk add
+    public List<Movie> addMovies(List<Movie> movies){
+        return movieRepo.saveAll(movies);
+    }
+//    delete movie
+    public String deleteMovie(Long movieId){
+        Movie movie= movieRepo.findById(movieId).orElseThrow(()->new RuntimeException("Movie Not Found"));
+        movieRepo.deleteById(movieId);
+        return "Movie Deleted Successfully";
+    }
 }

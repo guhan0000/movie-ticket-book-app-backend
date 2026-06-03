@@ -21,6 +21,14 @@ public class MovieController {
     public List<Movie> getAllMovies(){
         return movieService.getAllMovies();
     }
+    @PostMapping("/add-all")
+    public List<Movie> addMovies(@RequestBody List<Movie> movies) {
+        return movieService.addMovies(movies);
+    }
+    @DeleteMapping("/delete/{movieId}")
+    public String deleteMovie(@PathVariable Long movieId){
+        return movieService.deleteMovie(movieId);
+    }
 
 
 }
