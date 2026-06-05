@@ -23,4 +23,13 @@ public class MovieService {
 	public List<Movie> getAllMovies(){
         return movieRepo.findAll();
     }
+	public List<Movie> addMovieList(List<Movie> movies){
+		return movieRepo.saveAll(movies);
+	}
+	public String deleteMovie(Long movieId) {
+		Movie movie=movieRepo.findById(movieId).orElseThrow(()->new RuntimeException("movie not found"));
+		movieRepo.deleteById(movieId);
+		return "Movie deleted successfully";
+	}
+	
 }
