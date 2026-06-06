@@ -12,8 +12,8 @@ public class Seat {
     private Long seatId;
     private String rowLabel;
     private Integer seatNo;
-//    @Enumerated(EnumType.STRING)
-//    private String seatType;
+    @Enumerated(EnumType.STRING)
+    private SeatType seatType;
     @ManyToOne
     @JoinColumn(name = "screen_id")
     Screen screen;
