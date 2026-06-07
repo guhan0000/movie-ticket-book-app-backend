@@ -19,6 +19,7 @@ public class ScreenService {
 	
 	public Screen addScreen(Long theatreId, Screen screen) {
 		Theatre theatre=theatreRepository.findById(theatreId).orElseThrow(()->new RuntimeException("Theatre not found"));
+		screen.setTheatre(theatre);
 		return screenRepository.save(screen);		
 	}
 	public List<Screen> getScreensByTheatre(Long theatreId){
