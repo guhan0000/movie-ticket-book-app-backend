@@ -8,4 +8,5 @@ import com.movieBookV2.model.Show;
 @Repository
 public interface ShowRepository extends JpaRepository<Show, Long>{
 	
+	
 }

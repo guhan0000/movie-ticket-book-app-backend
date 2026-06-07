@@ -21,6 +21,9 @@ public class Show {
     private Screen screen;
     private LocalDate showDate;
     private LocalTime showTime;
-//    @Enumerated(EnumType.STRING)
-//    private String fromat;
+    private String format;
+    private String language;
+    @Enumerated(EnumType.STRING)
+    private ShowStatus status;
+    
 }
