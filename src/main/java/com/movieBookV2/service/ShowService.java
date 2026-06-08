@@ -1,8 +1,10 @@
 package com.movieBookV2.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,28 +39,13 @@ public class ShowService {
 	@Autowired
 	private ShowSeatRepository showSeatRepository;
 	
-//	show creation and 
-	@Transactional
-	public Show createShow(Long movieId,Long screenId,ShowRequest showRequest) {
-		Movie movie=movieRepository.findById(movieId).orElseThrow(()->new RuntimeException("Movie not found"));
-		Screen screen = screenRepository.findById(screenId).orElseThrow(()-> new RuntimeException("Screen not found"));
-		Show show=new Show();
-		show.setMovie(movie);
-		show.setScreen(screen);
-		show.setFormat(showRequest.getFormat());
-		show.setLanguage(showRequest.getLanguage());
-		show.setShowDate(showRequest.getShowDate());
-		show.setShowTime(showRequest.getShowTime());
-		show.setStatus(ShowStatus.ACTIVE);
-		Show savedShow = showRepository.save(show);
-		
-//		auto generation of ShowSeat
+	private void createShowSeat(Long screenId,Show show) {
 		List<Seat> seats = seatRepository.findByScreen_ScreenId(screenId);
 		List<ShowSeat>showSeats=new ArrayList<>();
 		for(Seat seat:seats) {
 			ShowSeat showSeat=new ShowSeat();
 			showSeat.setSeat(seat);
-			showSeat.setShow(savedShow);
+			showSeat.setShow(show);
 //			if(seat.getSeatType().equals(SeatType.PREMIUM)) {
 //				showSeat.setPrice(300d);
 //			}
@@ -72,7 +59,43 @@ public class ShowService {
 			showSeatRepository.saveAll(showSeats);
 			
 		}
-		return savedShow;
 	}
+//	show creation 
+	@Transactional
+	public List<Show> createShow(Long movieId,Long screenId,ShowRequest showRequest) {
+		Movie movie=movieRepository.findById(movieId).orElseThrow(()->new RuntimeException("Movie not found"));
+		Screen screen = screenRepository.findById(screenId).orElseThrow(()-> new RuntimeException("Screen not found"));
+		LocalDate currentDate=showRequest.getShowDate();
+		List<Show> shows=new ArrayList<>();
+		while(!currentDate.isAfter(showRequest.getShowEndDate())) {
+			Show show=new Show();
+			show.setMovie(movie);
+			show.setScreen(screen);
+			show.setFormat(showRequest.getFormat());
+			show.setLanguage(showRequest.getLanguage());
+			show.setShowDate(currentDate);
+//			show.setShowEndDate(showRequest.getShowEndDate());
+			show.setShowTime(showRequest.getShowTime());
+			show.setStatus(ShowStatus.ACTIVE);
+			Show savedShow = showRepository.save(show);
+			createShowSeat(screenId, savedShow);
+			shows.add(show);
+			currentDate=currentDate.plusDays(1);		}
+		List<Show> createdShows = showRepository.saveAll(shows);
+		
+//		
+		
+		
+//		
+		
+//		return savedShow;
+		return createdShows;
+	}
+//	get 8 days calender for shows
+		public Map<LocalDate, List<Show>> getShowsForNext8Days(Long movieId){
+			LocalDate today=LocalDate.now();
+			LocalDate after8Days=today.plusDays(7);
+			List<Show> showsFor8Days = showRepository.findByMovie_MovieIdAndShowDateBetween(movieId, today, after8Days);
+			return showsFor8Days.stream().collect(Collectors.groupingBy(Show::getShowDate));		}
 
 }

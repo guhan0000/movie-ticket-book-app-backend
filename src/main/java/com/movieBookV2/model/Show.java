@@ -21,6 +21,7 @@ public class Show {
     private Screen screen;
     private LocalDate showDate;
     private LocalTime showTime;
+    private LocalDate showEndDate;
     private String format;
     private String language;
     @Enumerated(EnumType.STRING)

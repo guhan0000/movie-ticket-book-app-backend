@@ -1,6 +1,11 @@
 package com.movieBookV2.controller;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +22,11 @@ public class ShowController {
 	@Autowired
 	private ShowService showService;
 	@PostMapping("/create")
-	public Show createShow(@RequestParam Long movieId, @RequestParam Long screenId, @RequestBody ShowRequest showRequest) {
+	public List<Show> createShow(@RequestParam Long movieId, @RequestParam Long screenId, @RequestBody ShowRequest showRequest) {
 		return showService.createShow(movieId, screenId, showRequest);
+	}
+	@GetMapping("/calender/{movieId}")
+	public Map<LocalDate,List<Show>> getShowsForNext8Days(Long movieId){
+		return showService.getShowsForNext8Days(movieId);
 	}
 }

@@ -12,6 +12,7 @@ import lombok.Data;
 @Data
 public class ShowRequest {
 	private LocalDate showDate;
+	private LocalDate showEndDate;
     private LocalTime showTime;
     private String format;
     private String language;
