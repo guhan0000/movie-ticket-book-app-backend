@@ -82,12 +82,6 @@ public class ShowService {
 			shows.add(show);
 			currentDate=currentDate.plusDays(1);		}
 		List<Show> createdShows = showRepository.saveAll(shows);
-		
-//		
-		
-		
-//		
-		
 //		return savedShow;
 		return createdShows;
 	}
@@ -96,6 +90,26 @@ public class ShowService {
 			LocalDate today=LocalDate.now();
 			LocalDate after8Days=today.plusDays(7);
 			List<Show> showsFor8Days = showRepository.findByMovie_MovieIdAndShowDateBetween(movieId, today, after8Days);
-			return showsFor8Days.stream().collect(Collectors.groupingBy(Show::getShowDate));		}
+//			System.out.println(showsFor8Days);
+//			System.out.println("Today = " + today);
+//			System.out.println("After8Days = " + after8Days);
+//			System.out.println("Shows = " + showsFor8Days.size());
+			return showsFor8Days.stream().collect(Collectors.groupingBy(Show::getShowDate));		
+			}
+		
+//		Get theatres with shows on a date
+		public Map<String, List<Show>> getShowsForMovieWithTheatres(Long movieId,LocalDate showDate){
+			List<Show> shows = showRepository.findByMovie_MovieIdAndShowDate(movieId, showDate);
+			return shows.stream().collect(Collectors.groupingBy(s->s.getScreen().getTheatre().getTheatreName()));	
+		}
+//		GET Available seats
+		public List<ShowSeat> getAvailableShowSeats(Long showId){
+			return showSeatRepository.findByShow_ShowIdAndStatus(showId,SeatStatus.AVAILABLE);
+			
+		}
+//		Get Available seatCount
+		public Integer getAvailableSeatCount(Long showId) {
+			return showSeatRepository.countByShow_ShowIdAndStatus(showId,SeatStatus.AVAILABLE);
+		}
 
 }
