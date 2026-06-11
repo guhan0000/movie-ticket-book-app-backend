@@ -28,6 +28,9 @@ public class SeatService {
 	}
 	public List<Seat> generateSeats(Long screenId,Integer rows,Integer seatsPerRow){
 		Screen screen=screenRepository.findById(screenId).orElseThrow(()->new RuntimeException("Screen not Found"));
+		if(rows*seatsPerRow>screen.getTotalSeats()) {
+			throw new RuntimeException("total seats in "+screen.getScreenName()+" are "+screen.getTotalSeats());
+		}
 		List<Seat> seats= new ArrayList<>();
 		List<String> rowLabel= Arrays.asList("A","B","C","D","E","F","G","H","I","J");
 		for(Integer r=0;r<rows;r++) {
