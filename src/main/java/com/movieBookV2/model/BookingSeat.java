@@ -11,11 +11,11 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "bookingSeats")
+@Table(name = "booking_seats")
 public class BookingSeat {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long bookingSeatId;
 	@ManyToOne
 	@JoinColumn(name = "booking_id")
 	private Booking booking;
