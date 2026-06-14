@@ -3,6 +3,7 @@ package com.movieBookV2.service;
 import com.movieBookV2.repository.ShowRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.movieBookV2.dto.BookingRequest;
+import com.movieBookV2.dto.BookingResponse;
 import com.movieBookV2.model.Booking;
 import com.movieBookV2.model.BookingSeat;
 import com.movieBookV2.model.BookingStatus;
@@ -86,8 +88,57 @@ public class BookingService {
 	
 //	BookingRefCode Generation
 	private String genereateBookingRef() {
-		return UUID.randomUUID().toString().substring(0,8).toUpperCase();
+		return "BK"+ UUID.randomUUID().toString().substring(0,8).toUpperCase();
 		
+	}
+//	confirm Booking after Payment
+	@Transactional
+	public Booking confirmBooking(Long bookingId) {
+		Booking booking=bookingRepository.findById(bookingId).orElseThrow(()->new RuntimeException("booking not found"));
+		List<BookingSeat> bookingSeats = bookingSeatRepository.findByBooking_BookingId(bookingId);
+		bookingSeats.forEach(bs->bs.getShowSeat().setStatus(SeatStatus.BOOKED));
+		List<ShowSeat> bookedShowSeats = bookingSeats.stream()
+				.map(bs->bs.getShowSeat())
+				.collect(Collectors.toList());
+		showSeatRepository.saveAll(bookedShowSeats);
+		booking.setStatus(BookingStatus.CONFIRMED);
+		return bookingRepository.save(booking);
+	}
+//	cancel booking and release seats
+	public Booking cancelBooking(Long bookingId) {
+		Booking booking=bookingRepository.findById(bookingId).orElseThrow(()->new RuntimeException("booking not found"));
+		List<BookingSeat> bookingSeats = bookingSeatRepository.findByBooking_BookingId(bookingId);
+		bookingSeats.forEach(bs->bs.getShowSeat().setStatus(SeatStatus.AVAILABLE));
+		List<ShowSeat> bookedSeats = bookingSeats.stream().map(bs->bs.getShowSeat())
+		.collect(Collectors.toList());
+		showSeatRepository.saveAll(bookedSeats);
+		booking.setStatus(BookingStatus.CANCELLED);
+		return bookingRepository.save(booking);
+	}
+//	Get Booking Details
+	public BookingResponse getBookingDetails(Long bookingId) {
+		Booking booking=bookingRepository.findById(bookingId).orElseThrow(()-> new RuntimeException("Booking not found"));
+		List<BookingSeat> bookingSeats = bookingSeatRepository.findByBooking_BookingId(bookingId);
+		List<String>seats=new ArrayList<>();
+		bookingSeats.forEach(bs->{seats.add(bs.getShowSeat().getSeat().getRowLabel()+"-"+bs.getShowSeat().getSeat().getSeatNo());
+		});
+		BookingResponse response=new BookingResponse();
+		response.setBookingId(booking.getBookingId());
+		response.setBookingRef(booking.getBookingRef());
+		response.setMovieName(booking.getShow().getMovie().getMovieName());
+		response.setShowDate(booking.getShow().getShowDate().toString());
+		response.setStartTime(booking.getShow().getShowTime().toString());
+		response.setBookingStatus(booking.getStatus().toString());
+		response.setTheatreName(booking.getShow().getScreen().getTheatre().getTheatreName());
+		response.setTotalAmount(booking.getTotalAmount());
+		response.setSeats(seats);
+		response.setSeatCount(seats.size());
+		return response;
+		
+	}
+//	get bookings done by user
+	public List<Booking> getUserBookings(Long userId){
+		return bookingRepository.findByUser_UserId(userId);
 	}
 
 }

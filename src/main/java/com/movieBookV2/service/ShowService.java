@@ -56,9 +56,9 @@ public class ShowService {
 			showSeat.setPrice(price);
 			showSeat.setStatus(SeatStatus.AVAILABLE);
 			showSeats.add(showSeat);
-			showSeatRepository.saveAll(showSeats);
 			
 		}
+		showSeatRepository.saveAll(showSeats);
 	}
 //	show creation 
 	@Transactional
