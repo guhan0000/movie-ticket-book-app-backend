@@ -2,38 +2,34 @@ package com.movieBookV2.model;
 
 import java.time.LocalDateTime;
 
-
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumeratedValue;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
-
 @Entity
 @Data
-@Table(name = "payments")
-public class Payment {
+@Table(name = "wallet_transactions")
+public class WalletTransaction {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long paymentIdLong;
-	@OneToOne
-	@JoinColumn(name = "booking_id")
-	private Booking booking;
+	private Long walletTransactionId;
+	@Column(name = "transaction_ref", unique = true)
+	private String transactionRef;
+	@ManyToOne
+	@JoinColumn(name = "wallet_id")
+	private Wallet wallet;
 	private Double amount;
 	@Enumerated(EnumType.STRING)
-	private PaymentMethod method;	// "UPI", "CARD", "WALLET"
-	private String transactionId;
-	@Enumerated(EnumType.STRING)
-	private PaymentStatus status;	// SUCCESS", "FAILED", "REFUNDED"	
-	private LocalDateTime paidAt;
-	
-	
-	
+	private WalletTransactionType type;
+	private String description;
+	private LocalDateTime transactionTime;
 
 }
