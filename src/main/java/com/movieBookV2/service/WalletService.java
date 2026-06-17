@@ -29,7 +29,7 @@ public class WalletService {
 	private WalletTransactionRepository walletTransactionRepository;
 	
 //	transaction ref generation
-	private String gemnerateTransactionRef() {
+	protected String gemnerateTransactionRef() {
 		return "W-TXN"+UUID.randomUUID()+System.currentTimeMillis();
 	}
 	

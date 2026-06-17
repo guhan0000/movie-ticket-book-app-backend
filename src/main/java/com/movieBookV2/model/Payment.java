@@ -27,7 +27,7 @@ public class Payment {
 	private Booking booking;
 	private Double amount;
 	@Enumerated(EnumType.STRING)
-	private PaymentMethod method;	// "UPI", "CARD", "WALLET"
+	private PaymentMethod method;	// "WALLET"
 	private String transactionId;
 	@Enumerated(EnumType.STRING)
 	private PaymentStatus status;	// SUCCESS", "FAILED", "REFUNDED"	
