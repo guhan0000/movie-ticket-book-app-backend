@@ -29,7 +29,7 @@ public class WalletService {
 	private WalletTransactionRepository walletTransactionRepository;
 	
 //	transaction ref generation
-	protected String gemnerateTransactionRef() {
+	protected String generateTransactionRef() {
 		return "W-TXN"+UUID.randomUUID()+System.currentTimeMillis();
 	}
 	
@@ -45,7 +45,7 @@ public class WalletService {
 		wallet.setBalance(wallet.getBalance()+amount);
 		WalletTransaction walletTransaction=new WalletTransaction();
 		walletTransaction.setAmount(amount);
-		walletTransaction.setTransactionRef(gemnerateTransactionRef());
+		walletTransaction.setTransactionRef(generateTransactionRef());
 		walletTransaction.setType(WalletTransactionType.CREDIT);
 		walletTransaction.setTransactionTime(LocalDateTime.now());
 		walletTransaction.setWallet(wallet);

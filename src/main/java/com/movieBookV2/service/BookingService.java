@@ -64,6 +64,7 @@ public class BookingService {
 //		calculate toatl amount
 		Double totalAmount = selectedSeats.stream().map(ss->ss.getPrice())
 		.reduce(0.0d,(a,b)->a+b);
+		System.out.println(totalAmount);
 		User user=userRepository.findById(request.getUserId()).orElseThrow(()->new RuntimeException("User not found"));
 		Show show= showRepository.findById(request.getShowId()).orElseThrow(()-> new RuntimeException("Show not found"));
 		Booking booking = new Booking();
