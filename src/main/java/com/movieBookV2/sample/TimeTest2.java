@@ -1,4 +1,4 @@
-package com.movieBookV2.service;
+package com.movieBookV2.sample;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.movieBookV2.dto.ShowRequest;
 import com.movieBookV2.model.Movie;
@@ -27,8 +26,9 @@ import com.movieBookV2.repository.ShowSeatRepository;
 
 import jakarta.transaction.Transactional;
 
-@Service
-public class ShowService {
+public class TimeTest2 {
+	
+	
 	@Autowired
 	private	MovieRepository movieRepository;
 	@Autowired
@@ -91,39 +91,37 @@ public class ShowService {
 			LocalDate today=LocalDate.now();
 			LocalDate after8Days=today.plusDays(7);
 			LocalTime currentTime=LocalTime.now();
-//			List<Show> showsFor8Days = showRepository.findByMovie_MovieIdAndShowDateBetween(movieId, today, after8Days);
-			List<Show> showsFor8Days = showRepository.findByMovie_MovieIdAndShowDateBetweenAndStatus(movieId,today, after8Days, ShowStatus.ACTIVE);
+			List<Show> showsFor8Days = showRepository.findByMovie_MovieIdAndShowDateBetween(movieId, today, after8Days);
+//			System.out.println(showsFor8Days);
 //			System.out.println("Today = " + today);
 //			System.out.println("After8Days = " + after8Days);
 //			System.out.println("Shows = " + showsFor8Days.size());
-			showsFor8Days.stream()
-			.forEach(s->{	
-//				System.out.println(currentTime.isBefore(s.getShowTime()));
-				if (!currentTime.isBefore(s.getShowTime())) {
-					
-							s.setStatus(ShowStatus.CANCELLED);
-							showRepository.save(s);
-						}
-					});
-			return showsFor8Days.stream()
-					.filter(s->s.getStatus().equals(ShowStatus.ACTIVE))
-					.collect(Collectors.groupingBy(Show::getShowDate));		
+			 showsFor8Days.stream()
+					.forEach(s->{	
+						if (currentTime.isBefore(s.getShowTime())) {
+									s.setStatus(ShowStatus.CANCELLED);
+								}
+							});
+					return showsFor8Days.stream().collect(Collectors.groupingBy(Show::getShowDate));		
 			}
+		
+		
+		public static void main(String[] args) {
+			TimeTest2 test2=new TimeTest2();
+			System.out.println(test2.getShowsForNext8Days(2l));
+		}
+		
+		
+		
+		
+		
+		
+		
 		
 //		Get theatres with shows on a date
 		public Map<String, List<Show>> getShowsForMovieWithTheatres(Long movieId,LocalDate showDate){
-			List<Show> shows = showRepository.findByMovie_MovieIdAndShowDateAndStatus(movieId, showDate,ShowStatus.ACTIVE);
-			 shows.stream()
-					.forEach(s->{	
-//						System.out.println(currentTime.isBefore(s.getShowTime()));
-						if (!LocalTime.now().isBefore(s.getShowTime())) {
-							
-									s.setStatus(ShowStatus.CANCELLED);
-									showRepository.save(s);
-								}
-							});
-			return	shows.stream()
-			 .collect(Collectors.groupingBy(s->s.getScreen().getTheatre().getTheatreName()));	
+			List<Show> shows = showRepository.findByMovie_MovieIdAndShowDate(movieId, showDate);
+			return shows.stream().collect(Collectors.groupingBy(s->s.getScreen().getTheatre().getTheatreName()));	
 		}
 //		GET Available seats
 		public List<ShowSeat> getAvailableShowSeats(Long showId){
