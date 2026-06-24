@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +17,7 @@ import com.movieBookV2.model.Movie;
 import com.movieBookV2.service.MovieService;
 
 @RestController
-@CrossOrigin(origins = "http://127.0.0.1:5500")
+//@CrossOrigin(origins = "*")
 @RequestMapping("/api/mba/movie")
 public class MovieController {
 		
@@ -38,5 +39,9 @@ public class MovieController {
 	    @DeleteMapping("/delete/{movieId}")
 	    public String deleteMovie(@PathVariable Long movieId) {
 	    	return movieService.deleteMovie(movieId);
+	    }
+	    @PatchMapping("/add/poster/{movieId}")
+	    public Movie addMoviePoster(@PathVariable Long movieId,@RequestBody String posterUrl) {
+	    	return movieService.addPoster(movieId, posterUrl);
 	    }
 }

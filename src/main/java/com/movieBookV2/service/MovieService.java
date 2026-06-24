@@ -31,5 +31,14 @@ public class MovieService {
 		movieRepo.deleteById(movieId);
 		return "Movie deleted successfully";
 	}
+	public Movie addPoster(Long movieId, String posterUrl) {
+		Movie movie=movieRepo.findById(movieId).orElseThrow(()->new RuntimeException("movie not found"));
+		if(posterUrl==null || posterUrl=="") {
+			throw new RuntimeException("poster url cannot be empty");
+		}
+		movie.setPosterUrl(posterUrl);
+		return movieRepo.save(movie);
+
+	}
 	
 }
