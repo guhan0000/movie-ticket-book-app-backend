@@ -116,7 +116,7 @@ public class ShowService {
 			 shows.stream()
 					.forEach(s->{	
 //						System.out.println(currentTime.isBefore(s.getShowTime()));
-						if (!LocalTime.now().isBefore(s.getShowTime())) {
+						if (!(LocalTime.now().isBefore(s.getShowTime()) && (s.getShowDate().isAfter(LocalDate.now()) || s.getShowDate().isEqual(LocalDate.now()))) ){
 							
 									s.setStatus(ShowStatus.CANCELLED);
 									showRepository.save(s);
