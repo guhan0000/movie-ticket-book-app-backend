@@ -47,12 +47,6 @@ public class ShowService {
 			ShowSeat showSeat=new ShowSeat();
 			showSeat.setSeat(seat);
 			showSeat.setShow(show);
-//			if(seat.getSeatType().equals(SeatType.PREMIUM)) {
-//				showSeat.setPrice(300d);
-//			}
-//			else {
-//				showSeat.setPrice(120d);
-//			}
 			Double price=(seat.getSeatType().equals(SeatType.PREMIUM))?(300d):(120d);
 			showSeat.setPrice(price);
 			showSeat.setStatus(SeatStatus.AVAILABLE);
@@ -75,62 +69,57 @@ public class ShowService {
 			show.setFormat(showRequest.getFormat());
 			show.setLanguage(showRequest.getLanguage());
 			show.setShowDate(currentDate);
-//			show.setShowEndDate(showRequest.getShowEndDate());
 			show.setShowTime(showRequest.getShowTime());
 			show.setStatus(ShowStatus.ACTIVE);
+			// persist each show so that showSeats can reference it
 			Show savedShow = showRepository.save(show);
 			createShowSeat(screenId, savedShow);
-			shows.add(show);
-			currentDate=currentDate.plusDays(1);		}
-		List<Show> createdShows = showRepository.saveAll(shows);
-//		return savedShow;
-		return createdShows;
+			shows.add(savedShow);
+			currentDate=currentDate.plusDays(1); 		}
+		// return the list of created shows (already saved)
+		return shows;
 	}
 //	get 8 days calender for shows
 		public Map<LocalDate, List<Show>> getShowsForNext8Days(Long movieId){
 			LocalDate today=LocalDate.now();
 			LocalDate after8Days=today.plusDays(7);
 			LocalTime currentTime=LocalTime.now();
-//			List<Show> showsFor8Days = showRepository.findByMovie_MovieIdAndShowDateBetween(movieId, today, after8Days);
 			List<Show> showsFor8Days = showRepository.findByMovie_MovieIdAndShowDateBetweenAndStatus(movieId,today, after8Days, ShowStatus.ACTIVE);
-//			System.out.println("Today = " + today);
-//			System.out.println("After8Days = " + after8Days);
-//			System.out.println("Shows = " + showsFor8Days.size());
+			// Cancel shows that are already in the past. For shows on today's date, cancel if show time is <= now.
 			showsFor8Days.stream()
-			.forEach(s->{	
-//				System.out.println(currentTime.isBefore(s.getShowTime()));
-				if (!currentTime.isBefore(s.getShowTime())) {
-					
-							s.setStatus(ShowStatus.CANCELLED);
-							showRepository.save(s);
-						}
-					});
+			.forEach(s->{
+				if (s.getShowDate().isBefore(today) || (s.getShowDate().isEqual(today) && !currentTime.isBefore(s.getShowTime()))) {
+						s.setStatus(ShowStatus.CANCELLED);
+						showRepository.save(s);
+				}
+			});
 			return showsFor8Days.stream()
 					.filter(s->s.getStatus().equals(ShowStatus.ACTIVE))
 					.collect(Collectors.groupingBy(Show::getShowDate));		
 			}
 		
-//		Get theatres with shows on a date
+//	Get theatres with shows on a date
 		public Map<String, List<Show>> getShowsForMovieWithTheatres(Long movieId,LocalDate showDate){
+			LocalDate today = LocalDate.now();
+			LocalTime now = LocalTime.now();
 			List<Show> shows = showRepository.findByMovie_MovieIdAndShowDateAndStatus(movieId, showDate,ShowStatus.ACTIVE);
-			 shows.stream()
-					.forEach(s->{	
-//						System.out.println(currentTime.isBefore(s.getShowTime()));
-						if (!(LocalTime.now().isBefore(s.getShowTime()) && (s.getShowDate().isAfter(LocalDate.now()) || s.getShowDate().isEqual(LocalDate.now()))) ){
-							
-									s.setStatus(ShowStatus.CANCELLED);
-									showRepository.save(s);
-								}
-							});
+			shows.stream()
+					.forEach(s->{
+						// cancel if the show date is before today, or if it's today and the show time has already passed
+						if (s.getShowDate().isBefore(today) || (s.getShowDate().isEqual(today) && !now.isBefore(s.getShowTime()))) {
+								s.setStatus(ShowStatus.CANCELLED);
+								showRepository.save(s);
+						}
+						});
 			return	shows.stream()
-			 .collect(Collectors.groupingBy(s->s.getScreen().getTheatre().getTheatreName()));	
+		 	.collect(Collectors.groupingBy(s->s.getScreen().getTheatre().getTheatreName()));	
 		}
-//		GET Available seats
+//	GET Available seats
 		public List<ShowSeat> getAvailableShowSeats(Long showId){
 			return showSeatRepository.findByShow_ShowIdAndStatus(showId,SeatStatus.AVAILABLE);
 			
 		}
-//		Get Available seatCount
+//	Get Available seatCount
 		public Integer getAvailableSeatCount(Long showId) {
 			return showSeatRepository.countByShow_ShowIdAndStatus(showId,SeatStatus.AVAILABLE);
 		}
